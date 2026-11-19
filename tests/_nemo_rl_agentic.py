@@ -50,11 +50,13 @@ import atexit
 import hashlib
 import json
 import os
+import pwd
 import re
 import shutil
 import struct
 import sys
 import tempfile
+import unittest
 from pathlib import Path
 from typing import Any, Callable
 
@@ -87,6 +89,23 @@ RUNTIME_COPIES = AGENTIC / "runtime"
 REAL_ARM = AGENTIC / "real-arm"
 # The runtime path the real arm was recorded with (gen_meta.json model_dir is <runtime>/models/qwen3-1.7b).
 RECORDED_AREA10 = json.loads((REAL_ARM / "gen_meta.json").read_text(encoding="utf-8"))["model_dir"].rsplit("/models/", 1)[0]
+
+
+def run_user() -> str:
+    """The container's `<uid>:<gid>` in fixture requests and records: the uid running the tests and its primary group,
+    so the output directories the tests create are owned by the container's uid (EXT-63) whoever runs them. The launch
+    rules refuse root, so a test that needs it skips under uid 0."""
+    uid = os.getuid()
+    if uid == 0:
+        raise unittest.SkipTest("the launch rules refuse a container running as root (uid 0); run the tests as a "
+                                "non-root user")
+    return f"{uid}:{pwd.getpwuid(uid).pw_gid}"
+
+
+def other_user() -> str:
+    """A `<uid>:<gid>` other than run_user()'s, for a sidecar whose user differs from the request's."""
+    uid = os.getuid() + 1
+    return f"{uid}:{uid}"
 
 
 def renamed_copy(path: Path) -> Path:
@@ -939,7 +958,7 @@ class AgenticScenario:
         side = {"runtime": {"kind": "container", "image": IMAGE}, "argv": list(SIDECAR_ARGV),
                 "mounts": [{"host": str(self.runtime / "executor"), "container": EXECUTOR, "mode": "ro"},
                            {"host": str(spool), "container": "/spool", "mode": "rw"}],
-                "env": dict(SIDECAR_ENV), "network": "none", "user": "1000:1000", "tmpfs": ["/tmp"], "read_only": True,
+                "env": dict(SIDECAR_ENV), "network": "none", "user": run_user(), "tmpfs": ["/tmp"], "read_only": True,
                 "cap_drop": ["ALL"], "security_opt": ["no-new-privileges"], "gpus": False,
                 "limits": dict(SIDECAR_LIMITS)}
         side.update(overrides)
@@ -962,7 +981,7 @@ class AgenticScenario:
                "runtime": {"kind": "container", "image": IMAGE, "venv_lock_sha256": None},
                "framework": {"name": "nemo_rl", "version": NEMO_RL_COMMIT, "commit": NEMO_RL_COMMIT},
                "training_seed": SEED, "gpus": True, "argv": self.argv(), "mounts": self.mounts(self.out, self.spool),
-               "tmpfs": ["/tmp"], "network": "none", "network_reason": None, "user": "1000:1000",
+               "tmpfs": ["/tmp"], "network": "none", "network_reason": None, "user": run_user(),
                "env_names": list(ENV_NAMES), "gpu_est_h": 2.5, "gpu_used_h": 30.0, "output_dir": str(self.out),
                "output_root": str(self.output_root),
                "gpu_step_sha256": file_sha256(self.host_work / "bin" / "gpu-step.sh"), "allow_network": False,
@@ -993,7 +1012,7 @@ class AgenticScenario:
         req = {"area": 10, "label": "mm-a10-agentic-smoke", "host_work": str(self.host_work),
                "runtime": {"kind": "container", "image": IMAGE},
                "framework": {"name": "nemo_rl", "version": NEMO_RL_COMMIT, "commit": NEMO_RL_COMMIT},
-               "training_seed": SEED, "gpus": True, "network": "none", "network_reason": None, "user": "1000:1000",
+               "training_seed": SEED, "gpus": True, "network": "none", "network_reason": None, "user": run_user(),
                "env": dict(TRAIN_ENV), "mounts": self.mounts(out, spool), "tmpfs": ["/tmp"], "output_dir": str(out),
                "gpu_est_h": 0.3, "argv": self.argv("smoke"), "sidecar": self.sidecar_request(spool)}
         req.update(overrides)
@@ -1027,7 +1046,7 @@ class AgenticScenario:
         req.update({"area": 10, "label": f"mm-a10-agentic-{script[:-3].replace('_', '-')}",
                     "host_work": str(self.host_work), "runtime": {"kind": "container", "image": IMAGE},
                     "framework": {"name": "nemo_rl", "version": NEMO_RL_COMMIT, "commit": NEMO_RL_COMMIT},
-                    "training_seed": 0, "network": "none", "network_reason": None, "user": "1000:1000",
+                    "training_seed": 0, "network": "none", "network_reason": None, "user": run_user(),
                     "tmpfs": ["/tmp"], "output_dir": str(out)})
         req.update(overrides)
         return req

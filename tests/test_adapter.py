@@ -1420,7 +1420,7 @@ class TestLaunchRules(AgenticCase):
                  ({"runtime": {"kind": "venv_in_container", "image": A.IMAGE, "venv_lock": "/x"}}, "kind container"),
                  ({"network": "bridge"}, "network"), ({"read_only": False}, "read_only"),
                  ({"gpus": True}, "gpus"), ({"limits": dict(A.SIDECAR_LIMITS, cpus=16)}, "limits"),
-                 ({"argv": A.SIDECAR_ARGV[:-2]}, "argv"), ({"user": "1001:1001"}, "user"),
+                 ({"argv": A.SIDECAR_ARGV[:-2]}, "argv"), ({"user": A.other_user()}, "user"),
                  ({"env": dict(A.SIDECAR_ENV, HF_TOKEN="x")}, "credentials")]
         for change, text in cases:
             with self.subTest(text=text):
