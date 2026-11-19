@@ -1,0 +1,34 @@
+{
+  "end_reason": "final",
+  "error": null,
+  "item": "math-test-0250",
+  "outcome": "correct",
+  "parsed_answer": 216,
+  "problem": "A rectangular box has volume 216.  Find the smallest possible surface area of the box.",
+  "reference": "216",
+  "repeat": 0,
+  "response": "so \\boxed{216}",
+  "score": 1.0,
+  "seed": 11,
+  "sub_metrics": {
+    "answer_found": 1,
+    "env_tokens": 0,
+    "model_tokens": 3,
+    "tool_calls": 0,
+    "tool_errors": 0,
+    "tool_timeouts": 0,
+    "truncated": 0,
+    "turns_used": 1
+  },
+  "transcript": [
+    {
+      "code": null,
+      "finish_reason": "stop",
+      "n_tokens": 3,
+      "obs_tokens": 0,
+      "observation": "",
+      "text": "so \\boxed{216}",
+      "tool_status": null
+    }
+  ]
+}

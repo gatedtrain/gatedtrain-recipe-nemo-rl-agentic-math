@@ -1,0 +1,48 @@
+{
+  "deployable": [
+    "adapter_config.json",
+    "adapter_model.safetensors",
+    "chat_template.jinja",
+    "merges.txt",
+    "sampler.json",
+    "tokenizer.json",
+    "tokenizer_config.json",
+    "vocab.json"
+  ],
+  "env_id": "math_code",
+  "examples_consumed": 6,
+  "file_origin": {
+    "chat_template.jinja": "policy/tokenizer/chat_template.jinja",
+    "merges.txt": "policy/tokenizer/merges.txt",
+    "tokenizer.json": "policy/tokenizer/tokenizer.json",
+    "tokenizer_config.json": "policy/tokenizer/tokenizer_config.json",
+    "vocab.json": "policy/tokenizer/vocab.json"
+  },
+  "files": {
+    "adapter_config.json": "sha256:096c20165c6f469d86ded01c9fe9b2cfe5f2c5e6052e7061b989c21f7bf330cb",
+    "adapter_model.safetensors": "sha256:2e6f5603e3a007349c6763ff6fe3afb2ca9418f05daa567fe3c2315e9defd30d",
+    "automodel_peft_config.json": "sha256:5d4406cc1af9c696940fdbd649adec1ed0516f3d93adf5041c95f6c0c12f0dfc",
+    "base_ref.json": "sha256:41906476e8bc66baa934b2dc11e869f18dc3b659925e9e7f3b4e86e3eb8f52ac",
+    "chat_template.jinja": "sha256:a55ee1b1660128b7098723e0abcd92caa0788061051c62d51cbe87d9cf1974d8",
+    "merges.txt": "sha256:6069f12e8a3d18ed7ce4ca514ac27b7e5c1dadb19a1ffd9b3ec2f5f91c455676",
+    "sampler.json": "sha256:ec5c9ecb784ce8d340c19a6241d7c8bc6e891adbab671b1e3e65f7d545dc6231",
+    "tokenizer.json": "sha256:8fa90bf4c9c12f0b15ffa89d81619d5e394aed6dbacf810d6022ee7b7cc104c1",
+    "tokenizer_config.json": "sha256:d5d09f07b48c3086c508b30d1c9114bd1189145b74e982a265350c923acd8101",
+    "training_info.json": "sha256:86ff78b7b594bc2ac17ab37e7e8bbf717bbbe3eadc80d8e5173a8c7f17c55802",
+    "vocab.json": "sha256:8fa0409a9ed33edbf6bfd17fd61df99e21c342c687bbb7647098d6ce35ba5eaa"
+  },
+  "global_step": 3,
+  "kind": "lora_adapter",
+  "lora": {
+    "alpha": 64,
+    "dim": 32
+  },
+  "memory_rung": "a",
+  "nemo_rl_step_dir": "step_3",
+  "profile": "probe",
+  "schema": "ptc_mm.agentic_cut",
+  "schema_version": "1.0",
+  "script_sha256": "sha256:04603e83368f02610df2f478bc3be317936210720f36148a382ecead0adc43af",
+  "seed": 10100,
+  "stage": "agentic_grpo"
+}

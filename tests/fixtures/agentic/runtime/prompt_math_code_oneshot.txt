@@ -1,0 +1,15 @@
+Solve the following math problem. You have a Python interpreter (numpy and sympy are available). To run code, write it between <code> and </code> and stop: the printed output and the value of the last line are returned between <result> and </result>, and you continue after it. Use code for every step that is not trivial (arithmetic, algebra with sympy, counting, checking cases) instead of computing by hand. You can run code at most 3 times. When you know the answer, write it as \boxed{{answer}}.
+
+Example:
+Problem: How many integers $n$ with $1 \le n \le 2026$ are divisible by 7 but not by 11?
+I will count them with code.
+<code>
+sum(1 for n in range(1, 2027) if n % 7 == 0 and n % 11 != 0)
+</code>
+<result>
+263
+</result>
+Of the integers from 1 to 2026, \boxed{{263}} are divisible by 7 but not by 11.
+
+Now solve this problem in the same way.
+Problem: {}

@@ -1,0 +1,34 @@
+{
+  "end_reason": "final",
+  "error": null,
+  "item": "math-test-0100",
+  "outcome": "wrong_answer",
+  "parsed_answer": -1,
+  "problem": "What is the minimum value of $a^2+6a-7$?",
+  "reference": "-16",
+  "repeat": 0,
+  "response": "\\boxed{-1}",
+  "score": 0.0,
+  "seed": 11,
+  "sub_metrics": {
+    "answer_found": 1,
+    "env_tokens": 0,
+    "model_tokens": 3,
+    "tool_calls": 0,
+    "tool_errors": 0,
+    "tool_timeouts": 0,
+    "truncated": 0,
+    "turns_used": 1
+  },
+  "transcript": [
+    {
+      "code": null,
+      "finish_reason": "stop",
+      "n_tokens": 3,
+      "obs_tokens": 0,
+      "observation": "",
+      "text": "\\boxed{-1}",
+      "tool_status": null
+    }
+  ]
+}

@@ -1,0 +1,113 @@
+{
+  "checks": {
+    "duplicate_item_texts": 0,
+    "train_candidates_dropped_as_test_duplicates": 3,
+    "train_vs_items_exact_overlap": 0,
+    "train_vs_items_normalized_overlap": 0
+  },
+  "counts": {
+    "items-test": 500,
+    "items_by_level": {
+      "Level 1": 53,
+      "Level 2": 95,
+      "Level 3": 116,
+      "Level 4": 120,
+      "Level 5": 116
+    },
+    "items_by_subject": {
+      "algebra": 135,
+      "counting_and_probability": 48,
+      "geometry": 36,
+      "intermediate_algebra": 79,
+      "number_theory": 77,
+      "prealgebra": 99,
+      "precalculus": 26
+    },
+    "train": 2000,
+    "train_by_level": {
+      "Level 1": 176,
+      "Level 2": 373,
+      "Level 3": 429,
+      "Level 4": 426,
+      "Level 5": 596
+    },
+    "train_by_subject": {
+      "algebra": 517,
+      "counting_and_probability": 212,
+      "geometry": 202,
+      "intermediate_algebra": 287,
+      "number_theory": 331,
+      "prealgebra": 356,
+      "precalculus": 95
+    }
+  },
+  "files": {
+    "data/shards/shard-00000.jsonl": "sha256:63aafb2c7915aa2f98a31bcb5c721156cb0198a2ec8e943368237beefd787abd",
+    "data/shards/shard-00001.jsonl": "sha256:99b5543d08cbcbad704e57bb4cf95135dd8c0e579f31333d95d395a8b024aab1",
+    "data/shards/shard-00002.jsonl": "sha256:24c53a7dc4c960a6de2afe1797c42474f235063e40a2b45d70d9b528078481f9",
+    "data/shards/shard-00003.jsonl": "sha256:e826b54799a4dd458555541bfbd82cfead7acf56590b9576c2e4072adc918eb4",
+    "data/train.jsonl": "sha256:56e9bf87889da029e2b4220360535735d62887cbcabe47c10cbb7007fd6efc69",
+    "items-test/items.jsonl": "sha256:cc252796f377009fbac1aa15bfedb6a3e9b37099725991c0cfed54780e5e435a"
+  },
+  "integer_filter_yield": {
+    "test": {
+      "integer": 3144,
+      "integer_by_subject": {
+        "algebra": 856,
+        "counting_and_probability": 306,
+        "geometry": 221,
+        "intermediate_algebra": 500,
+        "number_theory": 481,
+        "prealgebra": 624,
+        "precalculus": 156
+      },
+      "rows": 5000,
+      "with_boxed": 5000
+    },
+    "train": {
+      "integer": 4764,
+      "integer_by_subject": {
+        "algebra": 1234,
+        "counting_and_probability": 505,
+        "geometry": 481,
+        "intermediate_algebra": 683,
+        "number_theory": 788,
+        "prealgebra": 847,
+        "precalculus": 226
+      },
+      "rows": 7500,
+      "with_boxed": 7500
+    }
+  },
+  "license": "mit",
+  "prompt_file_sha256": "sha256:fe1b6fe17c750a03e99c60687adbece7305e16e833f20f0f943365409fe5be6a",
+  "prompt_tokens": {
+    "items-test": {
+      "max": 669,
+      "median": 122,
+      "min": 87,
+      "n": 500,
+      "p99": 394,
+      "template_ends_with_empty_think": true
+    },
+    "train": {
+      "max": 1370,
+      "median": 125,
+      "min": 86,
+      "n": 2000,
+      "p99": 624,
+      "template_ends_with_empty_think": true
+    }
+  },
+  "schema": "ptc_mm.agentic_data",
+  "schema_version": "1.0",
+  "seed": 20261115,
+  "source": {
+    "repo": "EleutherAI/hendrycks_math",
+    "revision": "21a5633873b6a120296cce3e2df9d5550074f4a3"
+  },
+  "tags": [
+    "prototype",
+    "unpromotable"
+  ]
+}

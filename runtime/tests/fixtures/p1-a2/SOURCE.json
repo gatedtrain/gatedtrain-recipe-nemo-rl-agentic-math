@@ -1,0 +1,68 @@
+{
+ "run": "p1-a2",
+ "source_dir": "out/area10-agentic/p1-a2/train",
+ "source_sha256": {
+  "env_calls.jsonl": "sha256:714530618741e6ef2f79751e2eb3938fe4c397ae4f60c623fe10814c6660037d",
+  "nemo/logs/exp_001/train_data_step1.jsonl": "sha256:c66f6cdbcde3bf159c9bf6a4d9b7e1f69bff44acc6cfdd7c389f398baba368fe",
+  "nemo/logs/exp_001/train_data_step2.jsonl": "sha256:1063e5c9f9d12d3de5b24e2151e9150e9db32955627f599e457b0ea21e4a826a",
+  "nemo/logs/exp_001/train_data_step3.jsonl": "sha256:d1f8e98333a30c4e62cc6312cc0c46d1515048249cd44104b6696a753e0917cd"
+ },
+ "selection": {
+  "1": [
+   [
+    0,
+    [
+     0,
+     1
+    ]
+   ],
+   [
+    8,
+    [
+     65,
+     66
+    ]
+   ]
+  ],
+  "2": [
+   [
+    5,
+    [
+     43,
+     46
+    ]
+   ],
+   [
+    8,
+    [
+     64,
+     65
+    ]
+   ]
+  ],
+  "3": [
+   [
+    2,
+    [
+     16,
+     22
+    ]
+   ],
+   [
+    8,
+    [
+     64,
+     70
+    ]
+   ]
+  ]
+ },
+ "prompts": 2,
+ "generations": 2,
+ "dropped_fields": [
+  "advantages",
+  "generation_logprobs",
+  "prev_logprobs"
+ ],
+ "cutter": "tests/cut_fixtures.py"
+}

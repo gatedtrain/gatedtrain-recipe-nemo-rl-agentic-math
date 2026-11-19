@@ -1,0 +1,45 @@
+{
+  "adapter": null,
+  "answer_found_share": 0.6666666666666666,
+  "degeneracy_mm38": {
+    "exact_match": {
+      "binary": true,
+      "pass": true
+    }
+  },
+  "error_classes": [
+    "missing_output",
+    "sandbox_failure"
+  ],
+  "errors": 2,
+  "exact_match": {
+    "mean": 0.3888888888888889,
+    "n": 18,
+    "sd": 0.5016313257045503
+  },
+  "gen_backend": "vllm",
+  "items": 20,
+  "mean_env_tokens": 1.5555555555555556,
+  "mean_model_tokens": 6.833333333333333,
+  "mean_tool_calls": 0.8333333333333334,
+  "mean_tool_errors": 0.2222222222222222,
+  "mean_turns": 1.7222222222222223,
+  "missing_hashes": [
+    "model_hash",
+    "item_set_hash"
+  ],
+  "model_dir": "/srv/ptc/nemo-rl-agentic-math/runtime/models/qwen3-1.7b",
+  "outcomes": {
+    "correct": 7,
+    "max_turns": 2,
+    "no_answer": 2,
+    "overflow": 2,
+    "wrong_answer": 5
+  },
+  "repeats": 1,
+  "responses": 20,
+  "sampler_hash": "sha256:71a76a4cf1717b409efa6397cd3b053ee45325699e6035d6d33cc9a3ddc85abb",
+  "truncated_share": 0.1111111111111111,
+  "used_tool_share": 0.5,
+  "wall_seconds": 0.0
+}

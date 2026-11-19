@@ -1,0 +1,20 @@
+{
+  "code_sha256": {
+    "nemo_rl/environments/games/sliding_puzzle.py": "sha256:fb9cd616cc7ead03440f1c183919491933b335ee1f132a944480964aba96b919",
+    "tests/_support.py": "sha256:0a69d8bbf6ba3d559dcde6e844c3d0c367d1ddf51185af6d0f59466610e309ee",
+    "traj_log.py": "sha256:9b51d7e0796d74027dd02e92e39ae4ed7c01ac55472bcd002b3724b78dec75d1"
+  },
+  "env_id": "sliding_puzzle",
+  "generated_with_note": "the tests/_support.py that generated this fixture; the published one (code_sha256) differs only in how it finds the NeMo RL clone and the run outputs (environment variables instead of host paths; the clone's variable renamed PTC_HUB_NEMO_RL_DIR for ptc-hub 0.2.0) and, for gatedtrain 0.3.0, in names only (GATEDTRAIN_NEMO_RL_DIR, the outputs' variable, the ray stub's marker attribute)",
+  "generated_with_sha256": {
+    "tests/_support.py": "sha256:c75b1b089d918e5d2d519eaef9096293e9c0fb9e3dab06083d8eb5a936c5aeb4"
+  },
+  "generations": 4,
+  "generator": "make_sliding.py.txt (run as make_sliding.py), run 2026-11-15 with a host Python 3.13 venv (CPU torch) as python -I -B",
+  "max_seq": 400,
+  "max_turns": 6,
+  "nemo_rl_commit": "4f39fd86289a2ffd5aaf5d202702f7fd7185c924",
+  "prompts": 2,
+  "steps": 2,
+  "what": "NeMo RL SlidingPuzzleEnv (real game logic) wrapped by the area traj_log.LoggedSlidingPuzzleEnv, driven by the area rollout double tests/_support.fake_rollout; member 3 of each group answers without an <action> first (metadata None, continues)"
+}

@@ -1,0 +1,98 @@
+# Amendment for the rename to gatedtrain 0.3.0 (05 section 3.7, R17-1/R17-3), version-only: amends
+# registration-ptc-hub.yaml (sha256:49caad3be66a...), the amendment for the rename to ptc-hub 0.2.0, which
+# amends the published registration.yaml next to this file; the gate-time original is
+# sha256:8e3b5d512ea0e2e56afe97238edf8147c9de19e69b90186564fbc79b443e5757 (the published copy differs from the
+# gate-time file only in redacted comments).
+# Area "agentic RL" gate pre-registration: NeMo RL multi-turn GRPO of Qwen3-1.7B with LoRA r32 and the Python tool
+# (env math_code, executor sidecar) against the base model, on the 500 held-out MATH integer-answer items
+# (runtime/README.md section 0; gatedtrain's MULTIMODAL-SPEC row 10). Full run: profile full with --max-steps 100 (16 prompts
+# x 8 per step, cuts every 20; the candidate is checkpoint-100). prototype, unpromotable. Unsigned. Values fixed after
+# the smoke (launch records train-smoke-1, eval-smoke-base-1-*, eval-smoke-cut-1-*) and before the full run's first START. Deciding T3 metric
+# `exact_match` (score_agentic.py's own parser: the last \boxed{} of the final assistant turn normalized to an integer;
+# binary; higher is better), blocking, construct-aligned with the training reward (math_verify on the final boxed turn;
+# R15-1) and scored against references of the training answers' annotation process (R16-1), both disclosed below;
+# superiority with margin 0; alpha 0.025 one-sided, power 0.8, m = 1; N 500, K 1 (greedy), eval seed 11. sigma_plan
+# fixed 0.82 = max(1.5 x ucb80(s_pilot), sqrt(2) x ucb80(s_base)) from the 20-item smoke arms (s_pilot 0.2236 = SD of
+# the paired differences smoke cut 5 minus the base, 1 discordant item; s_base 0.4894; ucb80 factor 1.1770 (19 df):
+# 0.2632, 0.5760; 1.5 x 0.2632 = 0.395, sqrt(2) x 0.5760 = 0.8145, rounded up). Planning effect 0.105: n_required =
+# ceil(((1.95996 + 0.84162) x 0.82 / 0.105)^2) = 479 <= 500 (the sigma rule ignores the pairing of a binary metric,
+# so this planning effect is conservative; the gate tests the observed paired differences). Tool use, turns, truncation
+# and tokens are sub-metrics in the report, never gated. Any later change (another environment included) is an
+# amendment: a new registration with `amends` and a new hash in spec.yaml (05:166).
+registration_version: 1
+registration_id: mm-a10-agentic-exact-match-superiority-v1
+signed_by: prototype-unsigned
+created_at: "2026-11-18T09:53:45Z"
+amends: "sha256:49caad3be66a1a9ebcb93ece6cd1a977f9b3fcb3f89cdd0f867dd1d0e161058f"
+workflow: mm-a10-agentic-grpo
+gate: quality_gate
+clause:
+  type: superiority
+  metric: exact_match
+  direction: higher_is_better
+  margin: 0.0
+  alpha: 0.025
+  power: 0.8
+  planning_effect: 0.105
+  sigma_plan: fixed
+  unit: item
+  samples_per_item: 1
+  eval_seeds: [11]
+  interval: cluster_bootstrap
+  blocking: true
+margin_justification: >-
+  Superiority with delta_sup = 0: any held-out gain of exact-match accuracy over the base model counts. Prototype value,
+  not reviewed by a named team.
+sigma_pilot:
+  sigma: 0.82
+  source: >-
+    GPU smoke (smoke-1 cut 5 with eval-smoke-base-1 and eval-smoke-cut-1): the 20 registered items --limit 20 selects
+    (evenly spaced over the file, every subject), seed 11, the deployment sampler (vLLM greedy, multi-turn, executor
+    sidecar). exact_match base 0.65, smoke cut 5 0.70; paired differences mean +0.05, SD 0.2236 (1 discordant item);
+    base item SD 0.4894. sigma_plan = max(1.5 x ucb80(0.2236), sqrt(2) x ucb80(0.4894)) = 0.8145, rounded up to 0.82.
+baseline_pilot_mean: 0.65      # base, 20 smoke items (MM-38: in (0, 1))
+construct_alignment: >-
+  exact_match counts a held-out answer correct when score_agentic.py's own parser (the last \boxed{} of the final
+  assistant turn, normalized to an integer; not math_verify) equals the integer reference; the training reward (NeMo
+  RL's HFVerifyWorker math_verify on the final assistant turn, paid only when that turn contains \boxed) also pays for
+  correct boxed final answers, with the same multi-turn protocol, prompt and executor as the evaluation. A pass shows
+  that the policy answers more held-out MATH problems correctly under an independent parser, partly through the
+  boxed-answer format the reward pays for, not a general gain in mathematical reasoning or in tool use (tool use is
+  reported as a sub-metric).
+shared_annotation: >-
+  The references of exact_match are held-out hendrycks_math test answers extracted by the same integer rule
+  (make_data.py integer_answer) from the same competition corpus as the training rows' answers; no training stage
+  consumed them (exact and normalized overlap 0), so the programmatic scorer stays T3 (05 section 6.1, R16-1). Part of a
+  gain may be learning that answer convention (one boxed integer): a pass shows more correct integer answers on unseen
+  MATH problems, not a general gain in mathematics. MATH is public since 2021 and the base was probably trained on it
+  (unverified); the paired design measures the change.
+eval_distribution:
+  item_set_hash: "sha256:0d88fddd57ada8d7968d8855e0bb397ed7ce6ae829c88f539e11f64fa566c675"   # manifest of area10-agentic/items-test/
+# The deployment sampler (gen_agentic.py SAMPLER plus the backend and the executor's code hashes; every cut's
+# sampler.json is it without `backend` and `executor_code_sha256`).
+sampler: {"backend": "vllm", "chat_template": "base tokenizer chat template, add_generation_prompt=True, enable_thinking=False", "executor": "executor/executor_server.py sidecar, stateless replay, limits of executor_server.DEFAULT_LIMITS", "executor_code_sha256": {"exec_protocol.py": "sha256:cbd8df69d462676420e3d4ddc922be50bcc387bc8d57722dbb60b8815b9783dd", "executor_server.py": "sha256:42971d92b4b215a8ab50abfbb4905ca9df1bf068cc7d613b771806d2fd846e2d", "sandbox_runner.py": "sha256:6e1082ec606cdb3dd56a1bb8fbb86429ddbbdc33fd632e2005f9e0272f3b1eaf"}, "include_stop_str_in_output": true, "max_model_len": 4096, "max_new_tokens_per_turn": 1024, "max_turns": 4, "messages": "[{role: user, content: <prompt_file>.format(problem)}]", "observation": "agentic_core.observation(), raw tokens without special tokens, obs_max_chars 512", "prompt_file": "prompt_math_code_oneshot.txt", "prompt_file_sha256": "sha256:3b7145c1edf2526dcd13d5477d343d68e883b30c8e20d1a5c5e3f19af7b6230f", "samples_per_seed": 1, "stop": ["</code>"], "strategy": "greedy", "temperature": 0.0, "top_p": 1.0}
+evaluators:
+  - id: agentic.math_code_items@0.1
+    # EXT-6: SHA-256 of the canonical JSON {evaluator, metric, direction, scorer}; scorer math_integer_boxed_own_parser
+    # with code_sha256 = the composite of score_agentic.py WITHOUT `env_id` in eval_meta.json, as renamed for
+    # gatedtrain 0.3.0 (sha256:3ede3a5a...; ptc-hub 0.2.0 sha256:2d90f842..., see rename_proof; the gate ran
+    # sha256:f8e356f4...).
+    manifest_hash: "sha256:dcad26644bc590738e4f02dcba95881675e9676a09fe4ab9cd7bcb37f89d6bca"
+multiplicity:
+  plan: single_gate
+  family: null
+analysis_code_version: gatedtrain 0.3.0
+bootstrap:
+  replicates: 10000
+  seed: 20261118
+pairing:
+  max_unpaired: 0
+min_paired: 10
+contamination:
+  allow_exact_overlap: false
+post_hoc: false
+rename_proof:                 # R17-3: score_agentic.py changed only by the gatedtrain 0.3.0 name map
+  - evaluator: agentic.math_code_items@0.1
+    code_sha256_before: "sha256:2d90f842065073974d1b00053780c7e08ed5e26cd884ddc74061bef07b74556c"
+    files: [scorer-ptc-hub/score_agentic.py]
+    composite: true

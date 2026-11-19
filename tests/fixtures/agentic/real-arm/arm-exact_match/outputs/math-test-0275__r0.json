@@ -1,0 +1,18 @@
+{
+  "end_reason": null,
+  "error": {
+    "class": "missing_output",
+    "message": "no generation for this (item, seed)"
+  },
+  "item": "math-test-0275",
+  "outcome": null,
+  "parsed_answer": null,
+  "problem": "Let $k$ be the smallest positive integer such that the binomial coefficient $\\binom{10^9}{k}$ is less than the binomial coefficient $\\binom{10^9 + 1}{k - 1}$.  Let $a$ be the first (from the left) digit of $k$ and let $b$ be the second (from the left) digit of $k$.  What is the value of $10a + b$?",
+  "reference": "38",
+  "repeat": 0,
+  "response": null,
+  "score": null,
+  "seed": 11,
+  "sub_metrics": null,
+  "transcript": null
+}

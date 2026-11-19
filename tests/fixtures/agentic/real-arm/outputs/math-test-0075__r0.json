@@ -1,0 +1,24 @@
+{
+  "end_reason": null,
+  "error": {
+    "class": "sandbox_failure",
+    "message": "executor_error: connection refused after one retry"
+  },
+  "item": "math-test-0075",
+  "outcome": null,
+  "parsed_answer": null,
+  "problem": "A line parallel to $3x-7y = 65$ passes through the point $(7,4)$ and $(0,K)$. What is the value of K?",
+  "reference": "1",
+  "repeat": 0,
+  "response": "<code>print(1)</code>",
+  "score": null,
+  "seed": 11,
+  "sub_metrics": null,
+  "transcript": [
+    {
+      "finish_reason": "stop",
+      "n_tokens": 5,
+      "text": "<code>print(1)</code>"
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+"""Generate the fixture `tests/fixtures/agentic/sliding-puzzle/` with the runtime's own code.
+
+Run (host CPU, read only on the runtime): <venv with torch>/bin/python -I -B make_sliding.py <dst>
+(PTC_RECIPE_NEMO_RL_AGENTIC_MATH_RUNTIME names the runtime, default runtime/ of this checkout; PTC_HUB_NEMO_RL_DIR the
+NeMo RL clone)
+
+What runs: NeMo RL's real `SlidingPuzzleGameLogic` / `SlidingPuzzleEnv` (a NeMo RL clone
+at 4f39fd8, loaded read-only through the area's `tests/_support.install_nemo_stubs`), the
+area's `traj_log.LoggedSlidingPuzzleEnv` (the environment-agnostic `TrajectoryLogger`), and the area's rollout double
+`tests/_support.fake_rollout` (NeMo RL's synchronous multi-turn bookkeeping and the logged train_data_step shape), exactly
+as the area's tests/test_consumption.py `SlidingPuzzleJoin` drives them: 2 steps x 2 prompts x 4 generations, max 6
+turns, max_seq 400, seeded puzzles (size 2, 1 shuffle move, max_moves 2), member 3 of each group first answers without
+an <action> (parse failure: metadata None, the trajectory continues). Nothing is written into the area directory.
+"""
+
+from __future__ import annotations
+
+import copy
+import json
+import os
+import random
+import sys
+from pathlib import Path
+
+AREA = Path(os.environ.get("PTC_RECIPE_NEMO_RL_AGENTIC_MATH_RUNTIME") or Path(__file__).resolve().parents[4] / "runtime")
+sys.path[:0] = [str(AREA / "tests"), str(AREA), str(AREA / "executor")]
+from _support import fake_rollout, install_nemo_stubs, load_fresh, read_jsonl, write_jsonl  # noqa: E402
+
+P, G, STEPS, MAX_TURNS, MAX_SEQ = 2, 4, 2, 6, 400
+
+
+def main(dst: Path) -> None:
+    install_nemo_stubs()
+    tl = load_fresh("traj_log.py", "traj_log_stubbed")
+    import nemo_rl.environments.games.sliding_puzzle as sp
+
+    dst.mkdir(parents=True)
+    env = tl.LoggedSlidingPuzzleEnv({"log_dir": str(dst)})
+
+    def env_step(msgs, md):
+        ret = env.step(msgs, md)
+        return ([o["content"] for o in ret.observations], ret.metadata, ret.next_stop_strings,
+                ret.rewards.tolist(), [bool(t) for t in ret.terminateds.tolist()])
+
+    rows = []
+    for k in range(P * STEPS):
+        random.seed(f"sp:{k}")
+        gs = sp.SlidingPuzzleGameLogic.generate({"size": 2, "shuffle_moves": 1})
+        prompt = f"puzzle {k} slide tiles"
+        rows.append({"row_id": f"sp-{k:05d}", "input": prompt, "messages": [{"role": "user", "content": prompt}],
+                     "game_state": gs})
+    moves = ["up", "down", "left", "right"]
+
+    def policy(i, turn, log):
+        if i % G == 3 and turn == 0:
+            return "I am not sure"
+        return f"<action>{moves[(i + turn) % 4]}</action>"
+
+    logs = dst / "nemo" / "logs" / "exp_001"
+    logs.mkdir(parents=True)
+    for k in range(1, STEPS + 1):
+        group = [rows[((k - 1) * P + g) % len(rows)] for g in range(P)]
+        batch = [r for r in group for _ in range(G)]
+        lines = fake_rollout([r["input"] for r in batch],
+                             [{"game_state": copy.deepcopy(r["game_state"]), "num_moves": 0, "max_moves": 2,
+                               "row_id": r["row_id"]} for r in batch], policy, env_step, MAX_TURNS, MAX_SEQ)
+        write_jsonl(logs / f"train_data_step{k}.jsonl", lines)
+    shard = dst / "data" / "shards" / "shard-00000.jsonl"
+    shard.parent.mkdir(parents=True)
+    shard.write_text("".join(json.dumps({k: v for k, v in r.items() if k != "game_state"}, sort_keys=True,
+                                        separators=(",", ":")) + "\n" for r in rows), encoding="utf-8")
+    calls = read_jsonl(dst / "env_calls.jsonl")
+    print(json.dumps({"env_lines": len(calls), "trajectories": len(read_jsonl(dst / "trajectories.jsonl")),
+                      "ends": sorted({c["end_reason"] for c in calls if c["terminated"]})}))
+
+
+if __name__ == "__main__":
+    main(Path(sys.argv[1]))

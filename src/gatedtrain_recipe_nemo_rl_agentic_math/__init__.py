@@ -1,0 +1,1 @@
+"""gatedtrain recipe: agentic RL with NeMo RL: multi-turn GRPO of Qwen3-1.7B (LoRA) with a Python tool in an executor sidecar, on MATH integer answers. `rows` registers the adapter `nemo_rl_agentic` (`adapter.NemoRlAgenticAdapter`)."""

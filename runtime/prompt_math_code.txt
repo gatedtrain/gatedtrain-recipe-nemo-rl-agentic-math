@@ -1,0 +1,3 @@
+Solve the following math problem. You may run Python code by writing it between <code> and </code>; the printed output and the value of the last line are returned to you between <result> and </result>. You can run code at most 3 times. Put your final answer in \boxed{{}}.
+
+Problem: {}

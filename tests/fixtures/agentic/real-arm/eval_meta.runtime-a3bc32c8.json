@@ -1,0 +1,60 @@
+{
+  "adapter": "nemo_rl_agentic",
+  "checkpoint": {
+    "base_model_hash": null,
+    "model_hash": null
+  },
+  "created_at": "2026-11-15T10:42:01Z",
+  "direction": "higher_is_better",
+  "env_id": "math_code",
+  "env_version_sha256": null,
+  "eval_seeds": [
+    11
+  ],
+  "evaluator_id": "agentic.math_code_items@0.1",
+  "framework": {
+    "name": "vllm",
+    "version": "0.29.0"
+  },
+  "item_set_hash": null,
+  "metric": "exact_match",
+  "normalizer_sha256": null,
+  "sampler": {
+    "backend": "vllm",
+    "chat_template": "base tokenizer chat template, add_generation_prompt=True, enable_thinking=False",
+    "executor": "executor/executor_server.py sidecar, stateless replay, limits of executor_server.DEFAULT_LIMITS",
+    "executor_code_sha256": {
+      "exec_protocol.py": "sha256:cbd8df69d462676420e3d4ddc922be50bcc387bc8d57722dbb60b8815b9783dd",
+      "executor_server.py": "sha256:42971d92b4b215a8ab50abfbb4905ca9df1bf068cc7d613b771806d2fd846e2d",
+      "sandbox_runner.py": "sha256:6e1082ec606cdb3dd56a1bb8fbb86429ddbbdc33fd632e2005f9e0272f3b1eaf"
+    },
+    "include_stop_str_in_output": true,
+    "max_model_len": 4096,
+    "max_new_tokens_per_turn": 1024,
+    "max_turns": 4,
+    "messages": "[{role: user, content: <prompt_file>.format(problem)}]",
+    "observation": "agentic_core.observation(), raw tokens without special tokens, obs_max_chars 512",
+    "prompt_file": "prompt_math_code_oneshot.txt",
+    "prompt_file_sha256": "sha256:3b7145c1edf2526dcd13d5477d343d68e883b30c8e20d1a5c5e3f19af7b6230f",
+    "samples_per_seed": 1,
+    "stop": [
+      "</code>"
+    ],
+    "strategy": "greedy",
+    "temperature": 0.0,
+    "top_p": 1.0
+  },
+  "sampler_hash": "sha256:71a76a4cf1717b409efa6397cd3b053ee45325699e6035d6d33cc9a3ddc85abb",
+  "schema": "ptc_skel.item_eval",
+  "schema_version": "1.0",
+  "score_range": [
+    0,
+    1
+  ],
+  "scorer": {
+    "code_sha256": "sha256:18cb40985b9f4f86553231965a6b75d7961a7ba98c66feda965fe37046fd5a7b",
+    "name": "math_integer_boxed_own_parser",
+    "version": "math_int_boxed_v1; python 3.13.18",
+    "weights_sha256": null
+  }
+}

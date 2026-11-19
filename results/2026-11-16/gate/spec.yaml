@@ -1,0 +1,30 @@
+# Area "agentic RL" workflow: NeMo RL multi-turn GRPO of Qwen3-1.7B (LoRA r32) with the Python tool (env math_code,
+# executor sidecar), gated on exact_match of 500 held-out MATH integer-answer items against the base model
+# (ptc's MULTIMODAL-SPEC row 10; runtime/README.md section 0). prototype, unpromotable. base: models/qwen3-1.7b
+# (Qwen/Qwen3-1.7B @ 70d244cc...); train: data/shards (concatenated into data/train.jsonl); items: items-test (500). `ptc-skel run` refuses this spec.
+workflow: mm-a10-agentic-grpo
+version: 1
+budget: {gpu_hours: 24}
+artifacts:
+  base:         {type: model_checkpoint, uri: "file:<data-root>/ptc-mm/area10-agentic/models/qwen3-1.7b@sha256:11e805260ced8dbff699088815939c03c32220e8a546d9ac713567ef21f0c327"}
+  train:        {type: training_dataset, uri: "file:<data-root>/ptc-mm/area10-agentic/data/shards@sha256:3d0dd927e6a779ca856b0be36373a0e6ff55ce0f16cf04a75a90c0b1517f1754"}
+  items:        {type: item_set, uri: "file:<data-root>/ptc-mm/area10-agentic/items-test@sha256:0d88fddd57ada8d7968d8855e0bb397ed7ce6ae829c88f539e11f64fa566c675", disjoint_from: [train]}
+  trainer_cfg:  {type: trainer_config, uri: "file:trainer.yaml@sha256:e365f0474a6439d045498fd4820867d2541ecbce7d09d3596ba5d768f04604f4"}
+  registration: {type: registration, uri: "file:registration.yaml@sha256:8e3b5d512ea0e2e56afe97238edf8147c9de19e69b90186564fbc79b443e5757"}
+stages:
+  - id: agentic_grpo
+    uses: rl.nemo_rl_agentic@0.1
+    algorithm: grpo
+    model_family: llm.qwen3@0.1
+    inputs: {model: base, data: train, config: trainer_cfg}
+    outputs: {model: ckpt}
+  - id: quality_gate
+    uses: gate.superiority@1.0
+    evaluator: agentic.math_code_items@0.1
+    sampler: deployment
+    inputs: {model: ckpt, baseline: base, items: items, registration: registration}
+    # mde equals the registration's planning_effect (G-4).
+    test: {metric: exact_match, alpha: 0.025, power: 0.80, mde: 0.105, cluster_by: item, seeds: 1}
+    on_fail: stop
+    owner: skeleton-demo
+    escalation: [skeleton-demo-lead]

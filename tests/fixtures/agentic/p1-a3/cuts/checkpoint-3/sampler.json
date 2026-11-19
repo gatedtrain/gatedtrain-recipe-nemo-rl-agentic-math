@@ -1,0 +1,19 @@
+{
+  "chat_template": "base tokenizer chat template, add_generation_prompt=True, enable_thinking=False",
+  "executor": "executor/executor_server.py sidecar, stateless replay, limits of executor_server.DEFAULT_LIMITS",
+  "include_stop_str_in_output": true,
+  "max_model_len": 4096,
+  "max_new_tokens_per_turn": 1024,
+  "max_turns": 4,
+  "messages": "[{role: user, content: <prompt_file>.format(problem)}]",
+  "observation": "agentic_core.observation(), raw tokens without special tokens, obs_max_chars 512",
+  "prompt_file": "prompt_math_code_oneshot.txt",
+  "prompt_file_sha256": "sha256:3b7145c1edf2526dcd13d5477d343d68e883b30c8e20d1a5c5e3f19af7b6230f",
+  "samples_per_seed": 1,
+  "stop": [
+    "</code>"
+  ],
+  "strategy": "greedy",
+  "temperature": 0.0,
+  "top_p": 1.0
+}

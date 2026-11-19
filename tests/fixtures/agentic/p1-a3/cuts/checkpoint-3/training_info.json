@@ -1,0 +1,1 @@
+{"consumed_samples": 48, "current_step": 3, "current_epoch": 0, "total_steps": 3, "total_valid_tokens": 191757.0, "trainer_version": null, "sampler_name": null, "sampler_dispatch_index": null, "cur_adaptive_ppo_clip_k": null, "next_nemo_gym_task_index": 0}

@@ -1,0 +1,12 @@
+{
+  "code_sha256": {
+    "score_agentic.py": "sha256:a750f5be01871a61e2ba08d5569d58634eaf4aeb35faeb636df790f5254c2ab2"
+  },
+  "executable": "/srv/ptc/venv/bin/python",
+  "gen_meta_sha256": "sha256:4c48542cd8bc6870ede0d94e6361c574f21c5bd44d7662d848dbeb82f7084754",
+  "gid": 1000,
+  "items_sha256": "sha256:cc252796f377009fbac1aa15bfedb6a3e9b37099725991c0cfed54780e5e435a",
+  "python": "3.13.18",
+  "scorer_code_sha256": "sha256:f8e356f400bcdf7af9fecd0c1cd43926b416a1d8def8563cd77f621e59c952bb",
+  "uid": 1000
+}

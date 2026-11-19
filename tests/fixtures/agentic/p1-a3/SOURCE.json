@@ -1,0 +1,94 @@
+{
+  "cutter": "tests/_nemo_rl_agentic.py cut_probe",
+  "dropped_fields": [
+    "advantages",
+    "generation_logprobs",
+    "prev_logprobs"
+  ],
+  "generations": 2,
+  "prompts": 2,
+  "rewritten": [
+    "run_args.json profile_settings prompts/generations",
+    "cuts/checkpoint-3/cut.json files, examples_consumed",
+    "run_args.json, cuts/checkpoint-3/adapter_config.json: the runtime directory as /srv/ptc/nemo-rl-agentic-math/runtime"
+  ],
+  "run": "p1-a3",
+  "selection": {
+    "1": [
+      [
+        12,
+        [
+          0,
+          1
+        ]
+      ],
+      [
+        13,
+        [
+          1,
+          4
+        ]
+      ]
+    ],
+    "2": [
+      [
+        4,
+        [
+          1,
+          6
+        ]
+      ],
+      [
+        9,
+        [
+          1,
+          2
+        ]
+      ]
+    ],
+    "3": [
+      [
+        0,
+        [
+          3,
+          4
+        ]
+      ],
+      [
+        7,
+        [
+          1,
+          2
+        ]
+      ]
+    ]
+  },
+  "source_dir": "out/area10-agentic/p1-a3/train",
+  "source_sha256": {
+    "attempts.jsonl": "sha256:d39f141b7e24268674a91d8be95c7d18b43056481931282e3a48483024590d37",
+    "cuts.jsonl": "sha256:8ff06ca124eea1a81d75251f7707fefc703fc358b478d0dc715c1cb58d3e917b",
+    "cuts/checkpoint-3/adapter_model.safetensors": "sha256:4e505007d47347544d540ba0b3a7f4754b99b17e7de5b4dd23f170fb2dac12fc",
+    "cuts/checkpoint-3/automodel_peft_config.json": "sha256:5d4406cc1af9c696940fdbd649adec1ed0516f3d93adf5041c95f6c0c12f0dfc",
+    "cuts/checkpoint-3/base_ref.json": "sha256:41906476e8bc66baa934b2dc11e869f18dc3b659925e9e7f3b4e86e3eb8f52ac",
+    "cuts/checkpoint-3/chat_template.jinja": "sha256:a55ee1b1660128b7098723e0abcd92caa0788061051c62d51cbe87d9cf1974d8",
+    "cuts/checkpoint-3/merges.txt": "sha256:8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5",
+    "cuts/checkpoint-3/sampler.json": "sha256:ec5c9ecb784ce8d340c19a6241d7c8bc6e891adbab671b1e3e65f7d545dc6231",
+    "cuts/checkpoint-3/tokenizer.json": "sha256:aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+    "cuts/checkpoint-3/tokenizer_config.json": "sha256:d5d09f07b48c3086c508b30d1c9114bd1189145b74e982a265350c923acd8101",
+    "cuts/checkpoint-3/training_info.json": "sha256:86ff78b7b594bc2ac17ab37e7e8bbf717bbbe3eadc80d8e5173a8c7f17c55802",
+    "cuts/checkpoint-3/vocab.json": "sha256:ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910",
+    "env-freeze.txt": "sha256:7e2a1e4a4ccf4807eb9300bea85fea5324afde71f3eb01c7c8438529c12cb90a",
+    "env_calls.jsonl": "sha256:fc4f6848a4686c9f5ba5d8ce4b6757176c8d4d77eb958573d23a64177ec207a8",
+    "nemo/logs/exp_001/train_data_step1.jsonl": "sha256:a91a25c9bcc44f0d1ff6926c35d0e588dd5461cbfab39e0878aa850437046b69",
+    "nemo/logs/exp_001/train_data_step2.jsonl": "sha256:d7c65aa45851dcc5727eb2e0cb9f7dcd01d493b9eb5a542e19dbe3595b9c20d6",
+    "nemo/logs/exp_001/train_data_step3.jsonl": "sha256:dbc00a6bb41a8ce2b019955689cec2004d608f5f155926d65f80daa0ff567ae6",
+    "trajectories.jsonl": "sha256:1e5cf94cce456f9a770676ee0e886b7680622e2f52b71f7f83f359e40d645725"
+  },
+  "stand_ins": [
+    "adapter_model.safetensors",
+    "tokenizer.json",
+    "vocab.json",
+    "merges.txt"
+  ],
+  "token_arrays": "cut to input_lengths"
+}

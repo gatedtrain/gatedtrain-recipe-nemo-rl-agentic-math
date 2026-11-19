@@ -1,0 +1,100 @@
+{
+  "adapter": null,
+  "backend": "vllm",
+  "code_sha256": {
+    "agentic_core.py": "sha256:c1076f0af2b0c6299e45a6dabccca69d915d76d0131730c497f16d00a77c5847",
+    "executor/exec_protocol.py": "sha256:cbd8df69d462676420e3d4ddc922be50bcc387bc8d57722dbb60b8815b9783dd",
+    "gen_agentic.py": "sha256:8f32dcd29de7a71b42476d7918623a940c918d65fc2bb49d1b59a1b99f429669"
+  },
+  "cut": null,
+  "env_id": "math_code",
+  "eval_seeds": [
+    11
+  ],
+  "executor": {
+    "code_sha256": {
+      "exec_protocol.py": "sha256:cbd8df69d462676420e3d4ddc922be50bcc387bc8d57722dbb60b8815b9783dd",
+      "executor_server.py": "sha256:42971d92b4b215a8ab50abfbb4905ca9df1bf068cc7d613b771806d2fd846e2d",
+      "sandbox_runner.py": "sha256:6e1082ec606cdb3dd56a1bb8fbb86429ddbbdc33fd632e2005f9e0272f3b1eaf"
+    },
+    "limits": {
+      "as_mb": 2048,
+      "capture_chars": 16384,
+      "cpu_s": 10,
+      "fsize_mb": 1,
+      "nofile": 64,
+      "nproc_extra": 32,
+      "wall_s": 10.0
+    },
+    "ok": true,
+    "python": "/opt/nemo_rl_venv/bin/python",
+    "python_version": "3.13.14",
+    "workers": 8
+  },
+  "item_ids": [
+    "math-test-0000",
+    "math-test-0025",
+    "math-test-0050",
+    "math-test-0075",
+    "math-test-0100",
+    "math-test-0125",
+    "math-test-0150",
+    "math-test-0175",
+    "math-test-0200",
+    "math-test-0225",
+    "math-test-0250",
+    "math-test-0275",
+    "math-test-0300",
+    "math-test-0325",
+    "math-test-0350",
+    "math-test-0375",
+    "math-test-0400",
+    "math-test-0425",
+    "math-test-0450",
+    "math-test-0475"
+  ],
+  "items": 20,
+  "items_sha256": "sha256:cc252796f377009fbac1aa15bfedb6a3e9b37099725991c0cfed54780e5e435a",
+  "limit": 20,
+  "model_dir": "/srv/ptc/nemo-rl-agentic-math/runtime/models/qwen3-1.7b",
+  "model_files": {
+    "config.json": "sha256:1ddb5b89ebc90dcb417a45c213d818577e65976454d29385c8f6140771d95197",
+    "generation_config.json": "sha256:2325da0f15bb848e018c5ae071b7943332e9f871d6b60e2ed22ca97d4cb993d2",
+    "merges.txt": "sha256:8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5",
+    "model-00001-of-00002.safetensors": "sha256:169ad53ec313c3a34b06c0809216e4fc072cce444a5d4ff2b59690d064130ed5",
+    "model-00002-of-00002.safetensors": "sha256:912becff8d60672aa8628ef08c05898d9adf17c2ad4ae3caf99b065622fdeff9",
+    "model.safetensors.index.json": "sha256:0d660e94b165eb912669a5249dff44b83188c4777a07ddb9611fb78d91b0578d",
+    "tokenizer.json": "sha256:aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+    "tokenizer_config.json": "sha256:d5d09f07b48c3086c508b30d1c9114bd1189145b74e982a265350c923acd8101",
+    "vocab.json": "sha256:ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+  },
+  "prompt_file": "prompt_math_code_oneshot.txt",
+  "prompt_file_sha256": "sha256:3b7145c1edf2526dcd13d5477d343d68e883b30c8e20d1a5c5e3f19af7b6230f",
+  "sampler": {
+    "chat_template": "base tokenizer chat template, add_generation_prompt=True, enable_thinking=False",
+    "executor": "executor/executor_server.py sidecar, stateless replay, limits of executor_server.DEFAULT_LIMITS",
+    "include_stop_str_in_output": true,
+    "max_model_len": 4096,
+    "max_new_tokens_per_turn": 1024,
+    "max_turns": 4,
+    "messages": "[{role: user, content: <prompt_file>.format(problem)}]",
+    "observation": "agentic_core.observation(), raw tokens without special tokens, obs_max_chars 512",
+    "prompt_file": "prompt_math_code_oneshot.txt",
+    "prompt_file_sha256": "sha256:3b7145c1edf2526dcd13d5477d343d68e883b30c8e20d1a5c5e3f19af7b6230f",
+    "samples_per_seed": 1,
+    "stop": [
+      "</code>"
+    ],
+    "strategy": "greedy",
+    "temperature": 0.0,
+    "top_p": 1.0
+  },
+  "seconds_per_trajectory": 0.3,
+  "versions": {
+    "dtype": "bfloat16",
+    "python": "3.13.14",
+    "transformers": "5.16.1",
+    "vllm": "0.29.0"
+  },
+  "wall_seconds": 120.0
+}

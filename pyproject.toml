@@ -1,0 +1,38 @@
+[project]
+name = "gatedtrain-recipe-nemo-rl-agentic-math"
+version = "0.1.0"
+description = "gatedtrain recipe: agentic RL with NeMo RL: multi-turn GRPO of Qwen3-1.7B (LoRA) with a Python tool in an executor sidecar, on MATH integer answers, with its gatedtrain adapter `nemo_rl_agentic` (prototype)."
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE", "THIRD_PARTY_NOTICES.md"]
+authors = [{name = "The gatedtrain Authors"}]
+requires-python = ">=3.12,<3.14"
+keywords = ["gatedtrain", "post-training", "nemo-rl", "grpo", "agentic-rl", "tool-use", "lora", "math"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+# The adapter is pure Python; training, generation, scoring and the executor sidecar run in gatedtrain's NeMo RL family
+# image (gatedtrain.families.nemo_rl) on the scripts in runtime/.
+dependencies = ["gatedtrain>=0.3,<0.4"]
+
+[project.urls]
+Homepage = "https://github.com/gatedtrain/gatedtrain-recipe-nemo-rl-agentic-math"
+Source = "https://github.com/gatedtrain/gatedtrain-recipe-nemo-rl-agentic-math"
+Issues = "https://github.com/gatedtrain/gatedtrain-recipe-nemo-rl-agentic-math/issues"
+
+[project.entry-points."gatedtrain.adapters"]
+nemo_rl_agentic = "gatedtrain_recipe_nemo_rl_agentic_math.rows:PLUGIN"
+
+[build-system]
+requires = ["setuptools>=78"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]

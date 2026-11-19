@@ -1,0 +1,43 @@
+{
+  "end_reason": "final",
+  "error": null,
+  "item": "math-test-0200",
+  "outcome": "wrong_answer",
+  "parsed_answer": -1,
+  "problem": "In a triangle with side lengths 5, 6 and $x$, what is the sum of all possible integral values of $x$?",
+  "reference": "54",
+  "repeat": 0,
+  "response": "\\boxed{-1}",
+  "score": 0.0,
+  "seed": 11,
+  "sub_metrics": {
+    "answer_found": 1,
+    "env_tokens": 2,
+    "model_tokens": 8,
+    "tool_calls": 1,
+    "tool_errors": 1,
+    "tool_timeouts": 0,
+    "truncated": 0,
+    "turns_used": 2
+  },
+  "transcript": [
+    {
+      "code": "print(",
+      "finish_reason": "stop",
+      "n_tokens": 5,
+      "obs_tokens": 2,
+      "observation": "<result>\nSyntaxError (line 1): '(' was never closed\n</result>\n",
+      "text": "<code>print(</code>",
+      "tool_status": "syntax_error"
+    },
+    {
+      "code": null,
+      "finish_reason": "stop",
+      "n_tokens": 3,
+      "obs_tokens": 0,
+      "observation": "",
+      "text": "\\boxed{-1}",
+      "tool_status": null
+    }
+  ]
+}

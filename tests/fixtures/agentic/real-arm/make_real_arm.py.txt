@@ -1,0 +1,34 @@
+"""Write a generation directory in gen_agentic.py's format for the 20 real items `--limit 20` selects (base model,
+scripted transcripts of every outcome, one sandbox_failure, one missing generation), for the scorer runs that make
+`tests/fixtures/ext/agentic/real-arm/`.
+
+Run: <skeleton-a10>/.venv/bin/python -I -B make_real_arm.py <skeleton-a10> <out gen dir>
+"""
+
+from __future__ import annotations
+
+import json
+import sys
+from pathlib import Path
+
+skel, gen = Path(sys.argv[1]), Path(sys.argv[2])
+sys.path[:0] = [str(skel / "tests"), str(skel)]
+import _nemo_rl_agentic as A  # noqa: E402
+
+items_all = A.read_jsonl(A.REAL / "items-test" / "items.jsonl")
+items = items_all[:: len(items_all) // 20][:20]
+assert [it["item"] for it in items] == [items_all[(i * 500) // 20]["item"] for i in range(20)]
+models = json.loads((A.REAL / "models" / "MODELS.json").read_text())["models"]["qwen3-1.7b"]["files"]
+files = {n: d["sha256"] for n, d in sorted(models.items()) if n.endswith((".json", ".safetensors", ".txt", ".jinja"))}
+meta = A.gen_meta(items=items, items_sha=A.file_sha256(A.REAL / "items-test" / "items.jsonl"), base_files=files,
+                  cut=None, limit=20)
+A.write_gen(gen, items, A.baseline_kind, meta)
+fail = A.gen_doc(items[3], "tool_right")
+fail["turns"] = fail["turns"][:1]
+for k in ("observation", "obs_tokens", "code", "tool_status"):
+    fail["turns"][0].pop(k)
+fail.update(end_reason=None, final_text=fail["turns"][0]["text"], error={
+    "class": "sandbox_failure", "message": "executor_error: connection refused after one retry"})
+A.write_json(gen / "gen" / f"{items[3]['item']}__s11.json", fail)
+(gen / "gen" / f"{items[11]['item']}__s11.json").unlink()
+print(json.dumps({"items": len(items), "first": items[0]["item"], "last": items[-1]["item"]}))
