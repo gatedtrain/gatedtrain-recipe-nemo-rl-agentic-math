@@ -171,6 +171,15 @@ Host tests (`tests/`, 62 tests since 0.11; run from the area directory):
 <venv-with-hydra>/bin/python -m unittest discover -s tests -t tests -p test_launcher.py
 ```
 
+Two environment variables (tests/_skips.py; added after the counts above, 2026-11-20):
+- `GATEDTRAIN_RUNTIME_TESTS_HOST_EXECUTOR=1`: the executor runs the host venv's Python, which may lack numpy and
+  sympy; `test_executor`'s numpy/sympy check is then skipped. Without it the check runs and fails when either is
+  missing, as it must in the sidecar's NeMo RL image (which has both).
+- `GATEDTRAIN_RUNTIME_TESTS_STRICT=1`, for the GPU host where every heavy input is present: a test that would skip
+  because the base tokenizer, the training data, the NeMo RL clone or torch is absent fails instead, naming the input
+  (a skipped class fails in its setUpClass), and the host-executor opt-out is ignored. Skips for packages a venv lacks
+  (tokenizers, transformers, hydra, math_verify) and for absent run outputs stay skips.
+
 All pass (2026-11-14). Covered: executor statuses and limits (wall and CPU timeout, 3 GiB allocation, 2 MiB file,
 socket / subprocess / os.system / fork / kill / write outside refused, raw-fd writes cannot corrupt the result, hard
 exit = crash, output cap), replay determinism and skipping, the Unix-socket server (ping, run, protocol errors, socket

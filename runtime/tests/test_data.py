@@ -8,7 +8,7 @@ import re
 import unittest
 from collections import Counter
 
-from _skips import HAVE_TRAIN, NO_TRAIN
+from _skips import HAVE_TRAIN, NO_TRAIN, skip_unless
 from _support import AREA, read_jsonl
 
 import make_data
@@ -18,7 +18,7 @@ def sha(p):
     return "sha256:" + hashlib.sha256(p.read_bytes()).hexdigest()
 
 
-@unittest.skipUnless(HAVE_TRAIN, NO_TRAIN)
+@skip_unless(HAVE_TRAIN, NO_TRAIN)
 class DataSplit(unittest.TestCase):
     @classmethod
     def setUpClass(cls):

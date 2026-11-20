@@ -12,7 +12,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from _skips import HAVE_BASE_TOKENIZER, HAVE_NEMO_RL, HAVE_TORCH, NO_BASE, NO_NEMO_RL, NO_TORCH
+from _skips import HAVE_BASE_TOKENIZER, HAVE_NEMO_RL, HAVE_TORCH, NO_BASE, NO_NEMO_RL, NO_TORCH, require, skip_unless
 from _support import AREA, OUTPUTS, fake_rollout, install_nemo_stubs, load_fresh, read_jsonl, write_jsonl
 
 import agentic_core
@@ -144,8 +144,7 @@ class RealLogJoin(unittest.TestCase):
             from tokenizers import Tokenizer
         except ImportError:  # pragma: no cover
             self.skipTest("tokenizers not installed in this venv")
-        if not HAVE_BASE_TOKENIZER:
-            self.skipTest(NO_BASE)
+        require(self, HAVE_BASE_TOKENIZER, NO_BASE)
         tok = Tokenizer.from_file(str(AREA / "models" / "qwen3-1.7b" / "tokenizer.json"))
         calls, steps, train_rows = self.load()
         out = consumption.build(calls, steps, train_rows, 2, 2, max_steps=3, max_turns=4, run="p1-a2", attempt=1)
@@ -183,8 +182,8 @@ class RealLogJoin(unittest.TestCase):
                           sum(r["env_tokens"] for r in out)), (51904, 151703, 9))
 
 
-@unittest.skipUnless(HAVE_NEMO_RL, NO_NEMO_RL)
-@unittest.skipUnless(HAVE_TORCH, NO_TORCH)
+@skip_unless(HAVE_NEMO_RL, NO_NEMO_RL)
+@skip_unless(HAVE_TORCH, NO_TORCH)
 class SlidingPuzzleJoin(unittest.TestCase):
     """The same logger and join code with NeMo RL's sliding_puzzle environment."""
 
