@@ -17,6 +17,7 @@ import unittest
 from argparse import Namespace
 from pathlib import Path
 
+from _skips import HAVE_BASE_TOKENIZER, HAVE_NEMO_RL, NO_BASE, NO_NEMO_RL
 from _support import AREA, NEMO_RL
 
 import gen_agentic
@@ -69,6 +70,7 @@ class Overrides(unittest.TestCase):
 
 
 @unittest.skipIf(OmegaConf is None, "hydra-core / omegaconf not installed in this venv")
+@unittest.skipUnless(HAVE_NEMO_RL, NO_NEMO_RL)
 class OverridesAgainstConfig(unittest.TestCase):
     def test_apply_to_pinned_config(self):
         for rung in ("a", "b", "c"):
@@ -109,6 +111,7 @@ class OverridesAgainstConfig(unittest.TestCase):
                 self.assertEqual((c["policy"]["train_micro_batch_size"], c["policy"]["logprob_batch_size"]), (1, 1))
 
 
+@unittest.skipUnless(HAVE_BASE_TOKENIZER, NO_BASE)
 class CutWriter(unittest.TestCase):
     def setUp(self):
         self.tmp = Path(tempfile.mkdtemp(prefix="a10-cut-"))

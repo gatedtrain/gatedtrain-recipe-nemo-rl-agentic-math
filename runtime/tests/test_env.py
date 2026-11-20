@@ -8,6 +8,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from _skips import HAVE_NEMO_RL, HAVE_TORCH, NO_NEMO_RL, NO_TORCH
 from _support import StubVerifyWorker, install_nemo_stubs, load_fresh, read_jsonl
 
 import agentic_core
@@ -97,6 +98,8 @@ class Core(unittest.TestCase):
         self.assertEqual((res[0]["reward"], res[0]["end_reason"]), (0.0, "final"))
 
 
+@unittest.skipUnless(HAVE_NEMO_RL, NO_NEMO_RL)
+@unittest.skipUnless(HAVE_TORCH, NO_TORCH)
 class ActorGlue(unittest.TestCase):
     """MathCodeEnvironment as NeMo RL would call it (stand-in ray / nemo_rl; real torch and executor)."""
 

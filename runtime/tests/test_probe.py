@@ -10,6 +10,7 @@ import shutil
 import tempfile
 import unittest
 
+from _skips import HAVE_BASE_TOKENIZER, NO_BASE
 from _support import AREA
 
 import agentic_core
@@ -113,6 +114,7 @@ class WithExecutor(unittest.TestCase):
 
 
 @unittest.skipIf(AutoTokenizer is None, "transformers not installed in this venv")
+@unittest.skipUnless(HAVE_BASE_TOKENIZER, NO_BASE)
 class ChatTemplate(unittest.TestCase):
     @classmethod
     def setUpClass(cls):

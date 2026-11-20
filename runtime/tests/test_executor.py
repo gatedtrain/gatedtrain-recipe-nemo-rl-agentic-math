@@ -12,6 +12,7 @@ import tempfile
 import time
 import unittest
 
+from _skips import executor_python_has
 from _support import AREA
 
 import exec_protocol
@@ -41,6 +42,8 @@ class ExecutorLimits(unittest.TestCase):
     def test_none_value_not_printed(self):
         self.assertEqual(self.run1("print(1)\nNone")["output"], "1\n")
 
+    @unittest.skipUnless(executor_python_has("numpy", "sympy"),
+                         "numpy or sympy not importable by this interpreter (the sidecar's NeMo RL image has both)")
     def test_numpy_and_sympy_available(self):
         r = self.run1("import sympy\nimport numpy\nsympy.factorint(360), int(numpy.arange(5).sum())")
         self.assertEqual(r["status"], "ok", r)

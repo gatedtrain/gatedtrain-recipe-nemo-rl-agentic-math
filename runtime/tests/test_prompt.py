@@ -12,6 +12,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from _skips import HAVE_BASE_TOKENIZER, HAVE_TRAIN, NO_BASE, NO_TRAIN, TRAIN
 from _support import AREA, OUTPUTS, fake_rollout, ntok, read_jsonl
 
 import agentic_core
@@ -35,7 +36,8 @@ PROBE2 = OUTPUTS / "probe-tool-2" / "probe"
 
 
 def problems() -> list[str]:
-    return [r["input"] for r in read_jsonl(AREA / "data" / "train.jsonl")] + \
+    """The training problems (when make_data.py has written them) and the committed test items' problems."""
+    return [r["input"] for r in (read_jsonl(TRAIN) if HAVE_TRAIN else [])] + \
         [i["problem"] for i in read_jsonl(AREA / "items-test" / "items.jsonl")]
 
 
@@ -78,6 +80,7 @@ class PromptFile(unittest.TestCase):
 
 
 @unittest.skipIf(AutoTokenizer is None, "transformers not installed in this venv")
+@unittest.skipUnless(HAVE_BASE_TOKENIZER, NO_BASE)
 class PromptTokens(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -89,6 +92,7 @@ class PromptTokens(unittest.TestCase):
         return self.tok.apply_chat_template([{"role": "user", "content": self.tmpl.format(problem)}], tokenize=False,
                                             add_generation_prompt=True, enable_thinking=False)
 
+    @unittest.skipUnless(HAVE_TRAIN, NO_TRAIN)
     def test_lengths_fit_the_context(self):
         lens = sorted(len(self.tok(self.render(p), add_special_tokens=False)["input_ids"]) for p in problems())
         self.assertEqual(lens[-1], 1557)                         # longest training prompt; items at most 856
