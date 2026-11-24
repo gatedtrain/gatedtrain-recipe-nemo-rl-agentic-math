@@ -40,7 +40,7 @@ arm files are explained in gatedtrain's [External runs](https://gatedtrain.githu
 
 ## Result
 
-One registered run, 100 steps (16 prompts x 8 generations each, 12,800 trajectories) on one GPU, 2.14 GPU-hours.
+One registered run, 100 steps (16 prompts x 8 generations each, 12,800 trajectories), 2.14 GPU-hours.
 The training reward rose from 0.61 at step 1 to 0.86 at step 100:
 
 | | `exact_match` on 500 held-out MATH test problems |
@@ -49,7 +49,7 @@ The training reward rose from 0.61 at step 1 to 0.86 at step 100:
 | Trained (`checkpoint-100`) | 0.702 |
 | Gate | **PASS**: +0.054, 95% cluster-bootstrap interval [0.014, 0.096], p = 0.0039 |
 
-The gain is small; the lower end of the interval is 0.014. `RESULT.md` has the full record: the registration, power,
+Re-judged under gatedtrain 0.3.0 with a version-only amendment (not post hoc), the gate still reports PASS with the same statistics. The gain is small; the lower end of the interval is 0.014. `RESULT.md` has the full record: the registration, power,
 overlap with training, the sub-metrics (the used-tool share rose from 0.412 to 0.884), the end-reward disclosure, the executor
 hardening and the re-collections. The gate files are under `results/2026-11-16/`.
 
