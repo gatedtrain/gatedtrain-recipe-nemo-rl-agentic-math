@@ -1,29 +1,57 @@
 # gatedtrain recipe: NeMo RL agentic GRPO on MATH with a Python tool
 
-A [gatedtrain](https://github.com/gatedtrain/gatedtrain) recipe: Qwen3-1.7B learns, with NeMo RL's synchronous
-multi-turn GRPO and a LoRA adapter (r 32, alpha 64), to solve MATH problems with integer answers while calling a Python
-tool (`<code>...</code>`, answered by `<result>...</result>`, up to four turns). gatedtrain gates the trained cut
-against the base model on 500 held-out MATH test problems; the deciding metric is `exact_match` of the final `\boxed{}` answer, read by
-the recipe's own integer parser (the training reward is NeMo RL's `math_verify`). The training environment is
-configuration: the adapter `nemo_rl_agentic` knows each environment's log shape and gates one environment through its
-evaluator (`math_code` now). Every model-written program runs only in the executor sidecar (`--network none`, uid 1000,
-no capabilities, read-only root, CPU / memory / pids limits), paired with the trainer and with the evaluation's
-generation step through a Unix socket in a shared spool. Prototype.
+This recipe teaches a small language model to solve MATH problems with integer answers while calling a Python tool,
+and lets [gatedtrain](https://github.com/gatedtrain/gatedtrain) decide whether the trained model really is better than
+the one it started from. Qwen3-1.7B learns, with NeMo RL's synchronous multi-turn GRPO and a LoRA adapter (r 32,
+alpha 64), to call the tool (`<code>...</code>`, answered by `<result>...</result>`, up to four turns). gatedtrain
+gates the trained cut against the base model on 500 held-out MATH test problems, by a rule registered before
+training. The deciding metric is `exact_match` of the final `\boxed{}` answer, read by the recipe's own integer parser
+(the training reward is NeMo RL's `math_verify`).
 
-The runtime notes, code comments, tests and `RESULT.md` cite the maintainers' decision record ("Area 10 (agentic RL)
-direction", "Area 10 decisions", "Area 10 tool-use probe and choice", "Area 10 result") and the framework's review
-rounds ("Review 9 M1", "area 6 review 11"): those records are not published. The ids `D3` to `D6` are the open
-decisions of `runtime/README.md` section 9.
+The training environment is configuration: the adapter `nemo_rl_agentic` knows each environment's log shape and gates
+one environment through its evaluator (`math_code` now). Every model-written program runs only in the executor sidecar
+(`--network none`, uid 1000, no capabilities, read-only root, CPU / memory / pids limits), paired with the trainer and
+with the evaluation's generation step through a Unix socket in a shared spool.
 
-## Layout
+A recipe is a ready-made external run for gatedtrain: the training code with its pinned environment, plus an
+*adapter*, the small plugin through which gatedtrain reads the run's outputs. gatedtrain does not start the training;
+you run it.
 
-| Path | What |
+This is a prototype: the result below is one registered run, not a benchmark claim.
+
+## How it works
+
+```mermaid
+flowchart LR
+    fetch["fetch_models.py, fetch_data.py, make_data.py:<br/>Qwen3-1.7B and MATH, pinned"] --> train["run_agentic_nemo.py in a container<br/>(NeMo RL multi-turn GRPO, math_code_env.py)"]
+    train <-->|"Unix socket"| exec["Executor sidecar: executor_server.py<br/>runs the model's Python cells, no network"]
+    train --> cuts["LoRA cuts and<br/>per-trajectory log"]
+    cuts --> eval["gen_agentic.py and score_agentic.py: base model and<br/>last cut on 500 MATH problems, tool via the executor"]
+    exec <-->|"Unix socket"| eval
+    eval --> arms["Arm files: per-item results"]
+    arms --> collect["gatedtrain ext-collect"]
+    cuts -->|"read through the adapter nemo_rl_agentic"| collect
+    collect --> gate{"Gate"}
+    gate --> report["Gate report, consumption ledger"]
+```
+
+`gatedtrain ext-launch` checks the run request and prints the container command; you run it. The steps, flags and
+arm files are explained in gatedtrain's [External runs](https://gatedtrain.github.io/gatedtrain/external-runs/) guide.
+
+## Result
+
+One registered run, 100 steps (16 prompts x 8 generations each, 12,800 trajectories) on one GPU, 2.14 GPU-hours.
+The training reward rose from 0.61 at step 1 to 0.86 at step 100:
+
+| | `exact_match` on 500 held-out MATH test problems |
 |---|---|
-| `src/gatedtrain_recipe_nemo_rl_agentic_math/` | the gatedtrain adapter `nemo_rl_agentic` (`adapter.py`) and its registry rows (`rows.py`), registered through the `gatedtrain.adapters` entry point |
-| `runtime/` | what runs in the containers: `run_agentic_nemo.py` (NeMo RL launcher), `ptc_agentic_hooks.py` (cuts, run record), `math_code_env.py` and `agentic_core.py` (the environment and its turn logic, a client of the executor), `traj_log.py` (the per-trajectory log), `consumption.py` (the log join), `gen_agentic.py` (multi-turn vLLM generation), `score_agentic.py` (scoring), the prompts, the host-side `fetch_models.py`, `fetch_data.py`, `make_data.py` and `probe_tool_use.py`, the pins (`models/MODELS.json`, `raw/RAW.json`), the data metadata, the registered item set (`items-test/`) and the runtime's own CPU tests (`tests/`) |
-| `runtime/executor/` | the executor: `executor_server.py` (serve, ping), `sandbox_runner.py` (one cell per process under rlimits), `exec_protocol.py` (wire protocol, statuses) and `run-executor.sh` (prints the sidecar's `docker run` commands) |
-| `tests/` | the adapter's tests on fixture runs (no GPU, no model, no NeMo RL needed) and gatedtrain's conformance check |
-| `results/2026-11-16/` | the gate files of the published run (`gate/`; redacted copies, host paths replaced by `<data-root>`, see `RESULT.md`) |
+| Base (Qwen3-1.7B) | 0.648 |
+| Trained (`checkpoint-100`) | 0.702 |
+| Gate | **PASS**: +0.054, 95% cluster-bootstrap interval [0.014, 0.096], p = 0.0039 |
+
+The gain is small; the lower end of the interval is 0.014. `RESULT.md` has the full record: the registration, power,
+overlap with training, the sub-metrics (the used-tool share rose from 0.412 to 0.884), the end-reward disclosure, the executor
+hardening and the re-collections. The gate files are under `results/2026-11-16/`.
 
 ## Setup
 
@@ -91,6 +119,16 @@ Note: `make_data.py` must reproduce the training shards and the committed item s
 `data/data_meta.json` and `items-test/item_set_meta.json` pin their SHA-256) to keep the registered data and item-set
 hashes.
 
+## Layout
+
+| Path | What |
+|---|---|
+| `src/gatedtrain_recipe_nemo_rl_agentic_math/` | the gatedtrain adapter `nemo_rl_agentic` (`adapter.py`) and its registry rows (`rows.py`), registered through the `gatedtrain.adapters` entry point |
+| `runtime/` | what runs in the containers: `run_agentic_nemo.py` (NeMo RL launcher), `ptc_agentic_hooks.py` (cuts, run record), `math_code_env.py` and `agentic_core.py` (the environment and its turn logic, a client of the executor), `traj_log.py` (the per-trajectory log), `consumption.py` (the log join), `gen_agentic.py` (multi-turn vLLM generation), `score_agentic.py` (scoring), the prompts, the host-side `fetch_models.py`, `fetch_data.py`, `make_data.py` and `probe_tool_use.py`, the pins (`models/MODELS.json`, `raw/RAW.json`), the data metadata, the registered item set (`items-test/`) and the runtime's own CPU tests (`tests/`) |
+| `runtime/executor/` | the executor: `executor_server.py` (serve, ping), `sandbox_runner.py` (one cell per process under rlimits), `exec_protocol.py` (wire protocol, statuses) and `run-executor.sh` (prints the sidecar's `docker run` commands) |
+| `tests/` | the adapter's tests on fixture runs (no GPU, no model, no NeMo RL needed) and gatedtrain's conformance check |
+| `results/2026-11-16/` | the gate files of the published run (`gate/`; redacted copies, host paths replaced by `<data-root>`, see `RESULT.md`) |
+
 ## Tests
 
 ```bash
@@ -104,6 +142,11 @@ rows). Tests that read regenerated files (the base model, the training shards) s
 The runtime's own CPU tests are `runtime/tests/` (run from `runtime/`; `GATEDTRAIN_NEMO_RL_DIR` names a NeMo RL clone at
 4f39fd8, `GATEDTRAIN_RECIPE_NEMO_RL_AGENTIC_MATH_OUTPUTS` the run outputs `p1-a2/` and `probe-tool-2/` for the tests that
 read them).
+
+The runtime notes, code comments, tests and `RESULT.md` cite the maintainers' decision record ("Area 10 (agentic RL)
+direction", "Area 10 decisions", "Area 10 tool-use probe and choice", "Area 10 result") and the framework's review
+rounds ("Review 9 M1", "area 6 review 11"): those records are not published. The ids `D3` to `D6` are the open
+decisions of `runtime/README.md` section 9.
 
 ## Data and licenses
 
@@ -123,7 +166,3 @@ This repository is licensed under the Apache License, Version 2.0 (`LICENSE`); s
 contains is listed with its license in `THIRD_PARTY_NOTICES.md`; models, data and images the recipe downloads or
 builds are listed under "Data and licenses" above. Names of third-party projects and products are trademarks of
 their owners; this project is not affiliated with or endorsed by them.
-
-## Result
-
-See `RESULT.md`.
